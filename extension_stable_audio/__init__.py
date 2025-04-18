@@ -1,0 +1,1 @@
+# Stable Audio extension
