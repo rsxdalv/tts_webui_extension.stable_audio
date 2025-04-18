@@ -6,7 +6,7 @@ import gradio as gr
 
 from huggingface_hub import hf_hub_download
 
-from tts_webui.history_tab.open_folder import open_folder
+from tts_webui.utils.open_folder import open_folder
 from tts_webui.utils.get_path_from_root import get_path_from_root
 from tts_webui.utils.torch_clear_memory import torch_clear_memory
 from tts_webui.utils.prompt_to_title import prompt_to_title
