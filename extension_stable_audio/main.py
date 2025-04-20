@@ -471,7 +471,7 @@ def save_result(audio, *generation_args):
 
     generation_args = {
         "date": date,
-        "version": "0.0.1",
+        "version": "0.0.2",
         "prompt": generation_args[0],
         "negative_prompt": generation_args[1],
         "seconds_start_slider": generation_args[2],

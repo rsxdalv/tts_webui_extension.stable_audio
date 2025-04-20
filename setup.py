@@ -3,7 +3,7 @@ import setuptools
 setuptools.setup(
     name="extension_stable_audio",
     packages=setuptools.find_namespace_packages(),
-    version="0.0.1",
+    version="0.0.2",
     author="rsxdalv",
     description="Stable Audio is a text-to-audio model for generating high-quality music and sound effects",
     url="https://github.com/rsxdalv/extension_stable_audio",
