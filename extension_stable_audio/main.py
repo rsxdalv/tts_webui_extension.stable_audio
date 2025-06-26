@@ -1,5 +1,6 @@
 import os
 import json
+from gradio_iconbutton import IconButton
 import numpy as np
 import torch
 import gradio as gr
@@ -10,7 +11,7 @@ from tts_webui.utils.open_folder import open_folder
 from tts_webui.utils.get_path_from_root import get_path_from_root
 from tts_webui.utils.torch_clear_memory import torch_clear_memory
 from tts_webui.utils.prompt_to_title import prompt_to_title
-from tts_webui.utils.gr_reload_button import gr_open_button_simple, gr_reload_button
+from tts_webui.utils.OpenFolderButton import OpenFolderButton
 
 LOCAL_DIR_BASE = os.path.join("data", "models", "stable-audio")
 LOCAL_DIR_BASE_ABSOLUTE = get_path_from_root(*LOCAL_DIR_BASE.split(os.path.sep))
@@ -112,8 +113,8 @@ def generate_cond(
         if audio_length > sample_size:
             input_sample_size = (
                 audio_length
-                + (model.min_input_length - (audio_length % model.min_input_length)) # type: ignore
-                % model.min_input_length # type: ignore
+                + (model.min_input_length - (audio_length % model.min_input_length))  # type: ignore
+                % model.min_input_length  # type: ignore
             )
 
         init_audio = (sample_rate, init_audio)
@@ -139,15 +140,15 @@ def generate_cond(
     # Do the audio generation
     audio = generate_diffusion_cond(
         model,
-        conditioning=conditioning, # type: ignore
-        negative_conditioning=negative_conditioning, # type: ignore
+        conditioning=conditioning,  # type: ignore
+        negative_conditioning=negative_conditioning,  # type: ignore
         steps=steps,
         cfg_scale=cfg_scale,  # type: ignore
         batch_size=batch_size,
-        sample_size=input_sample_size, # type: ignore
+        sample_size=input_sample_size,  # type: ignore
         sample_rate=sample_rate,
         seed=seed,
-        device=device, # type: ignore
+        device=device,  # type: ignore
         sampler_type=sampler_type,
         sigma_min=sigma_min,
         sigma_max=sigma_max,
@@ -322,6 +323,13 @@ def load_model_config(model_name):
         raise Exception(message)
 
 
+def unload_model():
+    from stable_audio_tools.interface.gradio import model, model_type
+
+    del model, model_type
+    torch.cuda.empty_cache()
+
+
 def stable_audio_ui():
     default_model_config_path = os.path.join(LOCAL_DIR_BASE, "diffusion_cond.json")
     with open(default_model_config_path) as f:
@@ -375,15 +383,20 @@ def stable_audio_ui():
                         value=pretrained_name,
                     )
 
-                    gr_open_button_simple(
+                    OpenFolderButton(
                         LOCAL_DIR_BASE, api_name="stable_audio_open_models"
                     )
-                    gr_reload_button().click(
+                    IconButton("refresh").click(
                         fn=lambda: gr.Dropdown(choices=get_model_list()),
                         outputs=[model_select],
                         api_name="stable_audio_refresh_models",
                     )
-                load_model_button = gr.Button(value="Load model")
+                with gr.Row():
+                    load_model_button = gr.Button(value="Load model")
+                    gr.Button("Unload model (not 100%)").click(
+                        fn=unload_model,
+                        api_name="stable_audio_unload_model",
+                    )
 
             with gr.Column():
                 gr.Markdown(
@@ -406,6 +419,8 @@ def stable_audio_ui():
                 outputs=[model_select],
             )
 
+            
+
     model_select_ui()
 
     with gr.Tabs():
@@ -425,7 +440,8 @@ def stable_audio_ui():
 
 
 def model_download_ui():
-    gr.Markdown("""
+    gr.Markdown(
+        """
 Models can be found on the [HuggingFace model hub](https://huggingface.co/models?search=stable-audio-open-1.0).
 
 Recommended models:
@@ -433,7 +449,8 @@ Recommended models:
 - voices: RoyalCities/Vocal_Textures_Main
 - piano: RoyalCities/RC_Infinite_Pianos
 - original: stabilityai/stable-audio-open-1.0
-        """)
+        """
+    )
     pretrained_name_text = gr.Textbox(
         label="HuggingFace repo name, e.g. stabilityai/stable-audio-open-1.0",
         value="",
@@ -471,7 +488,6 @@ def save_result(audio, *generation_args):
 
     generation_args = {
         "date": date,
-        "version": "0.0.2",
         "prompt": generation_args[0],
         "negative_prompt": generation_args[1],
         "seconds_start_slider": generation_args[2],
@@ -883,17 +899,17 @@ def create_sampling_ui(model_config, inpainting=False):
 #     data = data[int(seconds_start * sr) : int(seconds_total * sr)]
 #     return sr, data
 
+
 def ui():
     stable_audio_ui()
 
 
 def extension__tts_generation_webui():
     ui()
-    
+
     return {
         "package_name": "extension_stable_audio",
         "name": "Stable Audio",
-        "version": "0.0.1",
         "requirements": "git+https://github.com/rsxdalv/extension_stable_audio@main",
         "description": "Stable Audio is a text-to-audio model for generating high-quality music and sound effects",
         "extension_type": "interface",
