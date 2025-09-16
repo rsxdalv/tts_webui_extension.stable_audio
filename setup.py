@@ -1,12 +1,12 @@
 import setuptools
 
 setuptools.setup(
-    name="extension_stable_audio",
+    name="tts_webui_extension.stable_audio",
     packages=setuptools.find_namespace_packages(),
     version="0.1.1",
     author="rsxdalv",
     description="Stable Audio is a text-to-audio model for generating high-quality music and sound effects",
-    url="https://github.com/rsxdalv/extension_stable_audio",
+    url="https://github.com/rsxdalv/tts_webui_extension.stable_audio",
     project_urls={},
     scripts=[],
     install_requires=[
@@ -23,3 +23,4 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
 )
+
