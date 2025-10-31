@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tts_webui_extension.stable_audio"
+version = "0.1.1"
+description = "Stable Audio is a text-to-audio model for generating high-quality music and sound effects"
+authors = [
+    {name = "rsxdalv"}
+]
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "stable-audio-tools @ https://github.com/rsxdalv/stable-audio-tools/releases/download/v0.0.22/stable_audio_tools-0.0.22-py3-none-any.whl",
+    "descript-audiotools @ https://github.com/rsxdalv/audiotools/releases/download/v0.7.4/descript_audiotools-0.7.4-py2.py3-none-any.whl",
+    "protobuf==4.25.3",
+    "setuptools<70.0.0",
+    "sentencepiece==0.2.0",
+    "aeiou",
+]
+
+[project.urls]
+Homepage = "https://github.com/rsxdalv/tts_webui_extension.stable_audio"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+# This will find all namespace packages automatically
+namespaces = true
